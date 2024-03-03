@@ -24,6 +24,12 @@ def search_book_url(text: str):
         return get_link(block)
 
 
+def write_links(links):
+    file = pd.read_excel(EXCEL_PATH)
+    file['Ссылка'] = [f'https://www.roslit.ru{link}' for link in links]
+    file.to_excel('URLS.xlsx')
+
+
 class Client:
     def __init__(self):
         self.session = requests.Session()
@@ -38,10 +44,6 @@ class Client:
         res.raise_for_status()
         return res.text
 
-    def write_links(self, links):
-        file = pd.read_excel(EXCEL_PATH)
-        file['Ссылка'] = [f'https://www.roslit.ru{link}' for link in links]
-        file.to_excel('Done.xlsx')
     @staticmethod
     def read_articuls():
         file = pd.read_excel(EXCEL_PATH)
@@ -55,5 +57,5 @@ if __name__ == '__main__':
     for articul in articuls:
         html_text = parser.search_page(articul)
         links.append(search_book_url(html_text))
-    parser.write_links(links)
+    write_links(links)
 
